@@ -1,32 +1,24 @@
-// 5. Then create a Node application called `bamazonCustomer.js`. Running this application will first display all of the items available for sale. Include the ids, names, and prices of products for sale.
-
-// 6. The app should then prompt users with two messages.
-
-//    * The first should ask them the ID of the product they would like to buy.
-//    * The second message should ask how many units of the product they would like to buy.
-
-// 7. Once the customer has placed the order, your application should check if your store has enough of the product to meet the customer's request.
-
-//    * If not, the app should log a phrase like `Insufficient quantity!`, and then prevent the order from going through.
 
 // 8. However, if your store _does_ have enough of the product, you should fulfill the customer's order.
 //    * This means updating the SQL database to reflect the remaining quantity.
 //    * Once the update goes through, show the customer the total cost of their purchase.
 
-// ================================================
+
+
 // Required NPM 
+// ================================================
 var mysql = require("mysql");
 var inquirer = require("inquirer");
-
-
-
-
-
 // ================================================
-//Establish Connection To MySQL Database
 
-//--------------------------------------
+
+
+
+//Establish Connection To MySQL Database
+// ================================================
+
 //Connection Variable
+//______________________________________
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -36,8 +28,9 @@ var connection = mysql.createConnection({
     database: "bamazon_DB"
 });
 
-//--------------------------------------
+
 // Call Functions Upon Connecting
+//______________________________________
 connection.connect(function(err, res) {
     if (err) throw err;
     // console.log(res);
@@ -49,50 +42,45 @@ connection.connect(function(err, res) {
 
 
 
-// ================================================
 // Global Variables
-
-var prodctsArray = [];
-
-
-
-
-
-
 // ================================================
+
+var productsArray = [];
+
+
+
+
+
 // Functions
+// ================================================
 
-//--------------------------------------
-// Constructing Product
-function productsOnSale() {
-    this.item,
-    this.quantity,
-    this.price
-};
-
-
-//--------------------------------------
 // Display Product Query
+//______________________________________
 function queryProducts() {
-    connection.query("SELECT * FROM products", function(err, res) {
+    connection.query("SELECT * FROM products", function(err, response) {
         if (err) throw err;
         console.log("Items On Sale...")
         console.log("----------------------------------------------" + "\n");
-        for (i = 0; i < res.length; i++) {
-        console.log("Item: " + res[i].product_name);
-        console.log("Item ID #: " + res[i].item_id);
-        console.log("Item Price: $" + res[i].price);
-        console.log("===============" + "\n")
+        for (var i = 0; i < response.length; i++) {
+            // i = new productsOnSale(res[i].item_id, res[i].product_name, res[i].stock_quantity, res[i].price)
+            productsArray.push(response[i])
+            console.log("Item: " + response[i].product_name);
+            console.log("Item ID #: " + response[i].item_id);
+            console.log("Item Price: $" + response[i].price);
+            console.log("===============" + "\n")
         }
+        // console.log(productsArray);
         console.log("----------------------------------------------" + "\n");
-        // Cue More Functions
+        // Cue Functions
         customerPurchase();
     //   connection.end();
     })
 };
 
-//--------------------------------------
+
+
 // Inquires Customers On What They Want
+//______________________________________
 function customerPurchase() {
     inquirer.prompt([
         {
@@ -110,8 +98,20 @@ function customerPurchase() {
 }
 
 
-//--------------------------------------
+
 // Quantity Checking Function
+//______________________________________
 function quantityChecker(item, quantity) {
-    if 
+    var indexItem = item - 1;
+    if (quantity <= productsArray[indexItem].stock_quantity) {
+
+    } else {
+        console.log("Insufficent Quantity!" + "\n" + "Order again....");
+        customerPurchase();
+    }
 }
+
+
+
+
+//   connection.end();
