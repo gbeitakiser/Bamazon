@@ -1,18 +1,43 @@
--- Create a MySQL Database called `bamazon`.
 
--- 2. Then create a Table inside of that database called `products`.
+CREATE DATABASE bamazon_DB;
 
--- 3. The products table should have each of the following columns:
+USE bamazon_DB;
 
---    * item_id (unique id for each product)
+CREATE TABLE products (
+    item_id INT NOT NULL AUTO_INCREMENT,
+    product_name VARCHAR(200) NULL,
+    department_name VARCHAR(100) NULL,
+    price DECIMAL(10,2) NULL,
+    stock_quantity INT(10) NULL,
+    PRIMARY KEY (item_id)
+);
 
---    * product_name (Name of product)
+INSERT INTO products (product_name, department_name, price, stock_quantity)
+VALUES ("Ninja Sword", "Ninja Supplies", 99.99, 200);
 
---    * department_name
+INSERT INTO products (product_name, department_name, price, stock_quantity)
+VALUES ("Dog Food", "Pet Supplies", 24.99, 50);
 
---    * price (cost to customer)
+INSERT INTO products (product_name, department_name, price, stock_quantity)
+VALUES ("Cat Food", "Pet Supplies", 15.00, 212);
 
---    * stock_quantity (how much of the product is available in stores)
+INSERT INTO products (product_name, department_name, price, stock_quantity)
+VALUES ("Smoke Grenades", "Ninja Supplies", 30.00, 117);
 
+INSERT INTO products (product_name, department_name, price, stock_quantity)
+VALUES ("Gerbil Roller Ball", "Pet Supplies", 12.99, 15);
 
---    4. Populate this database with around 10 different products. (i.e. Insert "mock" data rows into this database and table).
+INSERT INTO products (product_name, department_name, price, stock_quantity)
+VALUES ("Nunchucks", "Ninja Supplies", 45.57, 83);
+
+INSERT INTO products (product_name, department_name, price, stock_quantity)
+VALUES ("Honda Accord", "Cars", 27945.99, 13);
+
+INSERT INTO products (product_name, department_name, price, stock_quantity)
+VALUES ("Ferrari LaFerrari Aperta", "Cars", 2258689.99, 210);
+
+INSERT INTO products (product_name, department_name, price, stock_quantity)
+VALUES ("Jaguar I-Pace", "Cars", 81234.99, 4000);
+
+INSERT INTO products (product_name, department_name, price, stock_quantity)
+VALUES ("Geo Metro", "Used Cars", 1199.99, 12);

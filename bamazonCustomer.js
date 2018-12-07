@@ -12,3 +12,41 @@
 // 8. However, if your store _does_ have enough of the product, you should fulfill the customer's order.
 //    * This means updating the SQL database to reflect the remaining quantity.
 //    * Once the update goes through, show the customer the total cost of their purchase.
+
+
+var mysql = require("mysql");
+
+var connection = mysql.createConnection({
+    host: "localhost",
+    port: 3306,
+    user: "root",
+  
+    password: "", // Remove password before pushing to GitHub
+    database: "bamazon_DB"
+});
+
+
+
+connection.connect(function(err, res) {
+    if (err) throw err;
+    // console.log(res);
+    // Cue Functions
+    queryProducts();
+})
+
+function queryProducts() {
+    connection.query("SELECT * FROM products", function(err, res) {
+      if (err) throw err;
+      console.log("Items On Sale...")
+      console.log("----------------------------------------------");
+      for (i = 0; i < res.length; i++) {
+        console.log("Item: " + res[i].product_name);
+        console.log("Item ID #: " + res[i].item_id);
+        console.log("Item Price: $" + res[i].price);
+        console.log("===============")
+      }
+      console.log("----------------------------------------------");
+      // Cue More Functions
+      connection.end();
+    });
+  }
