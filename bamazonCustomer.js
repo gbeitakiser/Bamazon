@@ -13,9 +13,20 @@
 //    * This means updating the SQL database to reflect the remaining quantity.
 //    * Once the update goes through, show the customer the total cost of their purchase.
 
-
+// ================================================
+// Required NPM 
 var mysql = require("mysql");
+var inquirer = require("inquirer");
 
+
+
+
+
+// ================================================
+//Establish Connection To MySQL Database
+
+//--------------------------------------
+//Connection Variable
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -25,8 +36,8 @@ var connection = mysql.createConnection({
     database: "bamazon_DB"
 });
 
-
-
+//--------------------------------------
+// Call Functions Upon Connecting
 connection.connect(function(err, res) {
     if (err) throw err;
     // console.log(res);
@@ -34,19 +45,73 @@ connection.connect(function(err, res) {
     queryProducts();
 })
 
+
+
+
+
+// ================================================
+// Global Variables
+
+var prodctsArray = [];
+
+
+
+
+
+
+// ================================================
+// Functions
+
+//--------------------------------------
+// Constructing Product
+function productsOnSale() {
+    this.item,
+    this.quantity,
+    this.price
+};
+
+
+//--------------------------------------
+// Display Product Query
 function queryProducts() {
     connection.query("SELECT * FROM products", function(err, res) {
-      if (err) throw err;
-      console.log("Items On Sale...")
-      console.log("----------------------------------------------");
-      for (i = 0; i < res.length; i++) {
+        if (err) throw err;
+        console.log("Items On Sale...")
+        console.log("----------------------------------------------" + "\n");
+        for (i = 0; i < res.length; i++) {
         console.log("Item: " + res[i].product_name);
         console.log("Item ID #: " + res[i].item_id);
         console.log("Item Price: $" + res[i].price);
-        console.log("===============")
-      }
-      console.log("----------------------------------------------");
-      // Cue More Functions
-      connection.end();
-    });
-  }
+        console.log("===============" + "\n")
+        }
+        console.log("----------------------------------------------" + "\n");
+        // Cue More Functions
+        customerPurchase();
+    //   connection.end();
+    })
+};
+
+//--------------------------------------
+// Inquires Customers On What They Want
+function customerPurchase() {
+    inquirer.prompt([
+        {
+            name: "want_to_buy",
+            message: "What is the Item ID of the product you want to buy?",
+        },{
+            name: "number_to_buy",
+            message: "How many do you want to buy?"
+        }
+    ]).then(function(response) {
+        var itemNumber = response.want_to_buy;
+        var itemQuantity = response.number_to_buy;
+        quantityChecker(itemNumber, itemQuantity);
+    })
+}
+
+
+//--------------------------------------
+// Quantity Checking Function
+function quantityChecker(item, quantity) {
+    if 
+}
