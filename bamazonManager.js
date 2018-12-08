@@ -17,7 +17,7 @@ var connection = mysql.createConnection({
     port: 3306,
     user: "root",
   
-    password: "4tigres", // Remove password before pushing to GitHub
+    password: "", // Remove password before pushing to GitHub
     database: "bamazon_DB"
 });
 
@@ -57,6 +57,8 @@ function password() {
         }
     ]).then(function(response) {
         if (response.password === "this1") {
+            pass = 5;
+            console.log("\nWelcome to the Manager Dashboard\n")
             dashBoard();
         } else if (pass > 0) {
             pass--;
@@ -77,7 +79,7 @@ function dashBoard() {
         {
             type: "list",
             name: "dashboard",
-            message: "Welcome to the Manager Dashboard. Choose What you'd like to do below.",
+            message: "Choose What you'd like to do below.",
             choices: [
                 'View Products for Sale',
                 'View Low Inventory',
@@ -117,10 +119,6 @@ function dashBoard() {
 ////
 //////
 ////////
-        //   * If a manager selects `Add to Inventory`, your app should display a prompt that will let 
-        //   the manager "add more" of any item currently in the store.
-
-
         //   * If a manager selects `Add New Product`, it should allow the manager to add a completely new product to the store.
 ////////
 //////
@@ -157,6 +155,7 @@ function viewProducts() {
 // View Low Inventory Function
 //______________________________________
 function lowInventory() {
+    lowQuantityArray = [];
     connection.query("SELECT * FROM products", function(err, response) {
         if (err) throw err;
 
@@ -184,17 +183,37 @@ function lowInventory() {
 
 // Add To Inventory Function
 //______________________________________
+
+// Need to fix the fact it only resets number by "added" number and does add that total
 function addToInventory() {
-    inquirer.prompt([
+    console.log("Selection works");
+    inqirer.prompt([
         {
-            name: "item_to_buy",
+            name: "item_to_add",
             message: "Which item are you stocking up on? Enter an item number."
         }, {
             name: "number_to_add",
             message: "How many more are you adding?"
         }
     ]).then(function(response) {
-        // Keep Coding Here
+        var query = connection.query(
+            "UPDATE products SET ? WHERE ?",
+            [
+              {
+                stock_quantity: response.number_to_add
+              },
+              {
+                item_id: response.item_to_add
+              }
+            ],
+            function(err, res) {
+                if (err) throw err;
+                console.log("Product updated!\n");
+                console.log("----------------------------------------------" + "\n");
+                console.log("What do you want to do next?\n");
+                dashBoard();
+            }
+          );
     })
 };
 
