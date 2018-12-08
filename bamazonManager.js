@@ -132,15 +132,6 @@ function dashBoard() {
 };
 
 
-//
-////
-//////
-////////
-        //   * If a manager selects `Add New Product`, it should allow the manager to add a completely new product to the store.
-////////
-//////
-////
-//
 
 
 
@@ -199,10 +190,11 @@ function lowInventory() {
 };
 
 
+// All Add To Inventory Functions
+// ==============================
+
 // Add To Inventory Ask Function
 //______________________________________
-
-// Need to fix the fact it only resets number by "added" number and does add that total
 function toInventoryAsk() {
     inqirer.prompt([
         {
@@ -216,9 +208,6 @@ function toInventoryAsk() {
         tallyInventory(response.item_to_add, response.number_to_add);
     });   
 };   
-        
-        
-        
 
 
 // Add To Inventory Tally Function
@@ -259,12 +248,46 @@ function addToInventory(ToAdd) {
         }
     );
 }
+// ==============================
+
+
 
 
 
 // Add New Product Function
 //______________________________________
 function addNewProduct() {
-    console.log("Add New Product Function Works");
-    // Code Here
+    inqirer.prompt([
+        {
+            name: "product_name",
+            message: "What is the name of the new product?"
+        }, {
+            name: "product_department",
+            message: "Which department does this product go into?"
+        }, {
+            name: "product_price",
+            message: "How much does each unit of this product cost?"
+        }, {
+            name: "product_quantity",
+            message: "How many units of this product are being added?"
+        }
+    ]).then(function(response) {
+        console.log("Inserting a new product...\n");
+        connection.query(
+            "INSERT INTO products SET ?",
+            {
+            product_name: response.product_name,
+            department_name: response.product_department,
+            price: response.product_price,
+            stock_quantity: response.product_quantity
+            },
+        function(err, res) {
+            if (err) throw err;
+            console.log(res.affectedRows + " product inserted!\n");
+            console.log("----------------------------------------------" + "\n");
+            console.log("What do you want to do next?\n");
+            dashBoard();
+        }
+    );
+    })
 };
