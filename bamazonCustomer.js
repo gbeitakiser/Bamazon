@@ -2,7 +2,6 @@
 // ================================================
 var mysql = require("mysql");
 var inquirer = require("inquirer");
-// ================================================
 
 
 
@@ -26,8 +25,6 @@ var connection = mysql.createConnection({
 //______________________________________
 connection.connect(function(err, res) {
     if (err) throw err;
-    // console.log(res);
-    // Cue Functions
     queryProducts();
 })
 
@@ -55,18 +52,14 @@ function queryProducts() {
         console.log("Items On Sale...")
         console.log("----------------------------------------------" + "\n");
         for (var i = 0; i < response.length; i++) {
-            // i = new productsOnSale(res[i].item_id, res[i].product_name, res[i].stock_quantity, res[i].price)
             productsArray.push(response[i])
             console.log("Item: " + response[i].product_name);
             console.log("Item ID #: " + response[i].item_id);
             console.log("Item Price: $" + response[i].price);
             console.log("===============" + "\n")
         }
-        // console.log(productsArray);
         console.log("----------------------------------------------" + "\n");
-        // Cue Functions
         customerPurchase();
-    //   connection.end();
     })
 };
 
@@ -128,12 +121,18 @@ function sellProduct(item, quantity) {
             console.log("You bought " + quantity + " " + productsArray[indexItem].product_name + "(s)!\n");
             console.log("Your transaction cost $" + (productsArray[indexItem].price * quantity).toFixed(2) + "\n");
             console.log("----------------------------------------------" + "\n");
-            connection.end();
+            // connection.end();
+            // buySomethingElse();
         }
       );
-    //   console.log(sale.sql);
+    
 }
 
 
-
-//   connection.end();
+function buySomethingElse() {
+    inquirer.prompt([
+        {
+            // Ask if they want to buy more and if yes, list items again
+        }
+    ])
+}
