@@ -1,10 +1,3 @@
-
-// 8. However, if your store _does_ have enough of the product, you should fulfill the customer's order.
-//    * This means updating the SQL database to reflect the remaining quantity.
-//    * Once the update goes through, show the customer the total cost of their purchase.
-
-
-
 // Required NPM 
 // ================================================
 var mysql = require("mysql");
@@ -104,13 +97,42 @@ function customerPurchase() {
 function quantityChecker(item, quantity) {
     var indexItem = item - 1;
     if (quantity <= productsArray[indexItem].stock_quantity) {
-
+        sellProduct(item, quantity);
     } else {
-        console.log("Insufficent Quantity!" + "\n" + "Order again....");
+        console.log("\n" + "Insufficent Quantity!" + "\n" + "Order again....");
+        console.log("----------------------------------------------" + "\n");
         customerPurchase();
     }
 }
 
+
+
+// Sell Product Function
+//______________________________________
+function sellProduct(item, quantity) {
+    var indexItem = item - 1;
+    var productsLeft = productsArray[indexItem].stock_quantity - quantity;
+    var sale = connection.query(
+        "UPDATE products SET ? WHERE ?",
+        [
+          {
+            stock_quantity: productsLeft
+          },
+          {
+            item_id: item
+          }
+        ],
+        function(err, res) {
+            if (err) throw err;
+            console.log("\n" + res.affectedRows + " product(s) updated!\n");
+            console.log("You bought " + quantity + " " + productsArray[indexItem].product_name + "(s)!\n");
+            console.log("Your transaction cost $" + (productsArray[indexItem].price * quantity).toFixed(2) + "\n");
+            console.log("----------------------------------------------" + "\n");
+            connection.end();
+        }
+      );
+    //   console.log(sale.sql);
+}
 
 
 

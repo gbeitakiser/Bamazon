@@ -41,3 +41,6 @@ VALUES ("Jaguar I-Pace", "Cars", 81234.99, 4000);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ("Geo Metro", "Used Cars", 1199.99, 12);
+
+
+-- UPDATE products SET ? WHERE ?    SET is (thing to change) = (new value)   and WHERE is (id name for item) = (id number for item);
