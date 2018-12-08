@@ -31,11 +31,29 @@ connection.connect(function(err, res) {
 
 
 
+
+
+
+
 // Variables
 // ================================================
+
+// Password Guesses
+//______________________
 let pass = 5;
+
+
+// Low Quantity Function
+//______________________
 let tooLow = false;
 var lowQuantityArray = [];
+
+
+// Restock Function
+//______________________
+var itemToAddCurrentQuantity = 0;
+var newTotal = 0;
+
 
 
 
@@ -89,7 +107,6 @@ function dashBoard() {
             ]
         }
     ]).then(function(response) {
-        console.log(response.dashboard);
         switch (response.dashboard) {
             case 'View Products for Sale':
                 viewProducts();
@@ -98,7 +115,7 @@ function dashBoard() {
                 lowInventory();
                 break;
             case 'Add to Inventory':
-                toInventory();
+                toInventoryAsk();
                 break;
             case 'Add New Product':
                 addNewProduct();
@@ -182,56 +199,67 @@ function lowInventory() {
 };
 
 
-// Add To Inventory Function
+// Add To Inventory Ask Function
 //______________________________________
 
 // Need to fix the fact it only resets number by "added" number and does add that total
-function toInventory() {
+function toInventoryAsk() {
     inqirer.prompt([
         {
             name: "item_to_add",
-            message: "Which item are you stocking up on? Enter an item number."
+            message: "Which item are you stocking up on? Enter an item number:"
         }, {
             name: "number_to_add",
             message: "How many more are you adding?"
         }
-    ]).then(function(err, response) {
-        if (err) throw err;
-        addToInventory(response.item_to_add, response.number_to_add);
+    ]).then(function(response) {
+        tallyInventory(response.item_to_add, response.number_to_add);
     });   
 };   
         
         
         
-    //     function(response) {
-
-    //     connection.query(
-    //         "UPDATE products SET ? WHERE ?",
-    //         [
-    //           {
-    //             stock_quantity: response.number_to_add
-    //           },
-    //           {
-    //             item_id: response.item_to_add
-    //           }
-    //         ],
-    //         function(err, res) {
-    //             if (err) throw err;
-    //             console.log("Product updated!\n");
-    //             console.log("----------------------------------------------" + "\n");
-    //             console.log("What do you want to do next?\n");
-    //             dashBoard();
-    //         }
-    //       );
-    // })
 
 
-function addToInventory(itemToAdd, quantityToAdd) {
+// Add To Inventory Tally Function
+//______________________________________
+function tallyInventory(itemToAdd, quantityToAdd) {
+    itemToAddCurrentQuantity = 0;
+    newTotal = 0;
+    var toSearch = itemToAdd - 1;
+
     connection.query("SELECT * FROM products", function(err, response) {
         if (err) throw err;
-        console.log(response);
+        itemToAddCurrentQuantity = response[toSearch].stock_quantity;
+        newTotal = itemToAddCurrentQuantity + quantityToAdd;
+        addToInventory(itemToAdd);
     })
 }
+
+
+// Add To Inventory Tally Function
+//______________________________________
+function addToInventory(ToAdd) {
+    connection.query(
+        "UPDATE products SET ? WHERE ?",
+        [
+          {
+            stock_quantity: newTotal
+          },
+          {
+            item_id: ToAdd
+          }
+        ],
+        function(err, res) {
+            if (err) throw err;
+            console.log("Product updated!\n");
+            console.log("----------------------------------------------" + "\n");
+            console.log("What do you want to do next?\n");
+            dashBoard();
+        }
+    );
+}
+
 
 
 // Add New Product Function
