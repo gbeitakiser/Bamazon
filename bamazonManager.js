@@ -1,6 +1,6 @@
 // Required NPM 
 // ================================================
-var inqirer = require("inquirer");
+var inquirer = require("inquirer");
 var mysql = require("mysql");
 
 
@@ -17,7 +17,7 @@ var connection = mysql.createConnection({
     port: 3306,
     user: "root",
   
-    password: "4tigres", // Remove password before pushing to GitHub
+    password: "", // Remove password before pushing to GitHub
     database: "bamazon_DB"
 });
 
@@ -65,7 +65,7 @@ var newTotal = 0;
 // Manager Login Function
 //______________________________________
 function password() {
-    inqirer.prompt([
+    inquirer.prompt([
         {
             type: "password",
             message: "Enter your password",
@@ -93,7 +93,7 @@ function password() {
 // Dashboard Display And Inquire Function
 //______________________________________
 function dashBoard() {
-    inqirer.prompt([
+    inquirer.prompt([
         {
             type: "list",
             name: "dashboard",
@@ -103,6 +103,7 @@ function dashBoard() {
                 'View Low Inventory',
                 'Add to Inventory',
                 'Add New Product',
+                'See Available Departments',
                 'Exit'
             ]
         }
@@ -120,6 +121,9 @@ function dashBoard() {
             case 'Add New Product':
                 addNewProduct();
                 break;
+            case 'See Available Departments':
+                    seeDeparments();
+                    break;
             case 'Exit':
                 console.log("Bye Then...");
                 process.exit();
@@ -150,6 +154,7 @@ function viewProducts() {
             console.log("Quantity In Stock: " + response[i].stock_quantity);
             console.log("Item Price: $" + response[i].price);
             console.log("Item ID #: " + response[i].item_id);
+            console.log("Total revenue from sales: $" + response[i].product_sales);
             console.log("===============" + "\n")
         }
         console.log("----------------------------------------------" + "\n");
@@ -196,7 +201,7 @@ function lowInventory() {
 // Add To Inventory Ask Function
 //______________________________________
 function toInventoryAsk() {
-    inqirer.prompt([
+    inquirer.prompt([
         {
             name: "item_to_add",
             message: "Which item are you stocking up on? Enter an item number:"
@@ -257,7 +262,7 @@ function addToInventory(ToAdd) {
 // Add New Product Function
 //______________________________________
 function addNewProduct() {
-    inqirer.prompt([
+    inquirer.prompt([
         {
             name: "product_name",
             message: "What is the name of the new product?"
@@ -291,3 +296,25 @@ function addNewProduct() {
     );
     })
 };
+
+
+
+
+// See All Departments  Function
+//______________________________________
+function seeDeparments() {
+    connection.query(
+        "SELECT * FROM bamazon_departments", function (err, response) {
+            if (err) throw err;
+            console.log("\nThese are all the departments within Bamazon...\n");
+            console.log("\n----------------------------------------------" + "\n");
+            for (var i = 0; i < response.length; i++) {
+                console.log (response[i].department_name);
+                
+            }
+            console.log("\n----------------------------------------------" + "\n");
+            console.log("What do you want to do next?\n");
+            dashBoard();
+        }
+    );
+}

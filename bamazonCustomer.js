@@ -16,7 +16,7 @@ var connection = mysql.createConnection({
     port: 3306,
     user: "root",
   
-    password: "4tigres", // Remove password before pushing to GitHub
+    password: "", // Remove password before pushing to GitHub
     database: "bamazon_DB"
 });
 
@@ -32,17 +32,20 @@ connection.connect(function(err, res) {
 
 
 
-// Global Variables
+// Global Variable(s)
 // ================================================
 
 var productsArray = [];
-
+var departmentsArray = [];
+// var itemID = 0;
+var itemQuantity = 0;
 
 
 
 
 // Functions
 // ================================================
+
 
 // Display Product Query
 //______________________________________
@@ -126,8 +129,10 @@ function sellProduct(item, quantity) {
 };
 
 
-
+// Update Revenue Function
+//______________________________________
 function upDateRevenue(item, quantity) {
+    // itemID = item;
     var indexItem = item - 1;
     var newSalesTotal = ((productsArray[indexItem].product_sales) + (productsArray[indexItem].price * quantity)).toFixed(2);
     connection.query(
@@ -139,15 +144,67 @@ function upDateRevenue(item, quantity) {
                 item_id: item
             }
         ],  function(err, res) {
-            console.log("Products Update worked?\n");
+            console.log("Products Update worked!\n");
             console.log("----------------------------------------------" + "\n");
-            productsArray = [];
+            // queryDepartment(item);
             buySomethingElse();
+            
         }      
       )
+};
+
+
+// Query Revenue Function
+//______________________________________
+function queryDepartment(item) {
+    departmentsArray = [];
+    connection.query(
+        "SELECT * FROM bamazon_departments", function (err, response) {
+            if (err) throw err;
+            for (var i = 0; i < response.length; i++) {
+                departmentsArray.push(response[i]);
+            }
+            addToDeptRev(item);
+        }
+    );
+    
 }
 
 
+// Add To Department Revenue Function
+//______________________________________
+function addToDeptRev(item) {
+    var indexItem = item - 1;
+
+    
+    console.log(productsArray);
+    console.log(departmentsArray);
+    console.log(indexItem);
+    
+    connection.query(
+        "UPDATE bamazon_departments SET ? WHERE ?",
+        [
+            {
+                product_sales: newTotal
+            },
+            {
+                department_id: item
+            }
+        ], function(err, res) {
+            console.log("Bamazon_Departments Database Update worked!\n");
+            console.log("----------------------------------------------" + "\n");
+            }
+    )
+            productsArray = [];
+            itemQuantity = 0;
+            buySomethingElse();
+    // process.exit();
+}
+
+
+
+// Buy More Function
+//______________________________________
 function buySomethingElse() {
     inquirer.prompt([
         {
