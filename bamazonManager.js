@@ -17,7 +17,7 @@ var connection = mysql.createConnection({
     port: 3306,
     user: "root",
   
-    password: "", // Remove password before pushing to GitHub
+    password: "4tigres", // Remove password before pushing to GitHub
     database: "bamazon_DB"
 });
 

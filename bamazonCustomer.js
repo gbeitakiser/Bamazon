@@ -16,7 +16,7 @@ var connection = mysql.createConnection({
     port: 3306,
     user: "root",
   
-    password: "", // Remove password before pushing to GitHub
+    password: "4tigres", // Remove password before pushing to GitHub
     database: "bamazon_DB"
 });
 
@@ -105,15 +105,14 @@ function quantityChecker(item, quantity) {
 function sellProduct(item, quantity) {
     var indexItem = item - 1;
     var productsLeft = productsArray[indexItem].stock_quantity - quantity;
-    var sale = connection.query(
+    connection.query(
         "UPDATE products SET ? WHERE ?",
         [
-          {
-            stock_quantity: productsLeft
-          },
-          {
-            item_id: item
-          }
+            {
+                stock_quantity: productsLeft
+            }, {
+                item_id: item
+            }
         ],
         function(err, res) {
             if (err) throw err;
@@ -121,18 +120,48 @@ function sellProduct(item, quantity) {
             console.log("You bought " + quantity + " " + productsArray[indexItem].product_name + "(s)!\n");
             console.log("Your transaction cost $" + (productsArray[indexItem].price * quantity).toFixed(2) + "\n");
             console.log("----------------------------------------------" + "\n");
-            // connection.end();
-            // buySomethingElse();
+            upDateRevenue(item, quantity);
         }
       );
-    
+};
+
+
+
+function upDateRevenue(item, quantity) {
+    var indexItem = item - 1;
+    var newSalesTotal = ((productsArray[indexItem].product_sales) + (productsArray[indexItem].price * quantity)).toFixed(2);
+    connection.query(
+        "UPDATE products SET ? WHERE ?",
+        [
+            {
+                product_sales: newSalesTotal
+            }, {
+                item_id: item
+            }
+        ],  function(err, res) {
+            console.log("Products Update worked?\n");
+            console.log("----------------------------------------------" + "\n");
+            productsArray = [];
+            buySomethingElse();
+        }      
+      )
 }
 
 
 function buySomethingElse() {
     inquirer.prompt([
         {
-            // Ask if they want to buy more and if yes, list items again
+            type: "confirm",
+            name: "buy_more",
+            message: "Do you want to buy something else?",
+            default: false
         }
-    ])
+    ]).then(function(answer) {
+        if (answer.buy_more === true) {
+            queryProducts();
+        } else {
+            console.log("Goodbye then...")
+            process.exit();
+        }
+    })
 }

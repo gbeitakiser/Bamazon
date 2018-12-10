@@ -42,5 +42,22 @@ VALUES ("Jaguar I-Pace", "Cars", 81234.99, 4000);
 INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ("Geo Metro", "Used Cars", 1199.99, 12);
 
+--  Modify Products table by adding product_sales column
+
+
+
+
+CREATE TABLE bamazon_departments (
+    department_id INT NOT NULL AUTO_INCREMENT,
+    department_name VARCHAR(100) NULL,
+    over_head_costs DECIMAL(10,2) NULL,
+    PRIMARY KEY (department_id)
+);
+
+ALTER TABLE products
+ADD COLUMN product_sales DECIMAL(10,2) AFTER stock_quantity;
+
 
 -- UPDATE products SET ? WHERE ?    SET is (thing to change) = (new value)   and WHERE is (id name for item) = (id number for item);
+
+UPDATE products SET product_sales = 0 WHERE item_id = 1;
