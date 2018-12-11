@@ -34,13 +34,12 @@ connection.connect(function(err, res) {
 
 
 
-
 // Variables
 // ================================================
 
 // Password Guesses
 //______________________
-let pass = 5;
+let pass = 2;
 
 
 // Low Quantity Function
@@ -83,7 +82,8 @@ function password() {
             console.log("Wrong Password. Try again.\n");
             password();
         } else {
-            console.log("Too many login attempts. Goodbye Los er\n");
+            console.log("Too many login attempts. Goodbye Loser\n");
+            process.exit();
         }  
     })    
 };
@@ -183,7 +183,13 @@ function lowInventory() {
 
         if (tooLow === true) {
             console.log("The following items have less than 5 units left in stock.\n");
-            console.log(lowQuantityArray);
+            for (var i = 0; i < lowQuantityArray.length; i++) {
+                console.log("Product Name: " + lowQuantityArray[i].product_name);
+                console.log("Quantity Left: " + lowQuantityArray[i].stock_quantity);
+                console.log("Item ID: " + lowQuantityArray[i].item_id);
+                console.log("-----------------------------"  + "\n")
+            }
+            
         } else if (tooLow === false) {
             console.log("You have no items with less than 5 units left in stock.\n");
         }
@@ -225,7 +231,7 @@ function tallyInventory(itemToAdd, quantityToAdd) {
     connection.query("SELECT * FROM products", function(err, response) {
         if (err) throw err;
         itemToAddCurrentQuantity = response[toSearch].stock_quantity;
-        newTotal = itemToAddCurrentQuantity + quantityToAdd;
+        newTotal = +itemToAddCurrentQuantity + +quantityToAdd;
         addToInventory(itemToAdd);
     })
 }
